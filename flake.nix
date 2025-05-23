@@ -11,11 +11,32 @@
     in
     {
       devShells = eachSystem (pkgs: {
-        default = pkgs.mkShell {
-          buildInputs = [
-            pkgs.go
-          ];
-        };
+        default =
+          with pkgs;
+          mkShell {
+            packages =
+              [
+                go
+                fyne
+              ]
+              ++ (
+                if stdenv.isLinux then
+                  [
+                    libGL
+                    pkg-config
+                    xorg.libX11.dev
+                    xorg.libXcursor
+                    xorg.libXi
+                    xorg.libXinerama
+                    xorg.libXrandr
+                    xorg.libXxf86vm
+                    libxkbcommon
+                    wayland
+                  ]
+                else
+                  [ ]
+              );
+          };
       });
     };
 }
