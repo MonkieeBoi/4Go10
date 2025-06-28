@@ -1,0 +1,34 @@
+package main
+
+import (
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
+)
+
+func new_start_page() (chan bool, *fyne.Container) {
+	started := make(chan bool, 1)
+
+	title := widget.NewLabel("4Go10")
+	title.SizeName = theme.SizeNameHeadingText
+	title.Alignment = fyne.TextAlignCenter
+	title.TextStyle = fyne.TextStyle{Bold: true}
+
+	start_btn := widget.NewButton("Start", func() { go func() { started <- true }() })
+
+	high_score := widget.NewLabel("Highest Score - 1")
+	high_score.Alignment = fyne.TextAlignCenter
+
+	page := container.New(
+		layout.NewGridLayoutWithRows(5),
+		&widget.Label{},
+		&widget.Label{},
+		container.New(layout.NewCenterLayout(), title),
+		container.New(layout.NewCenterLayout(), start_btn),
+		container.New(layout.NewCenterLayout(), high_score),
+	)
+
+	return started, page
+}

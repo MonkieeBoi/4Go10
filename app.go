@@ -5,9 +5,7 @@ import (
 	"time"
 
 	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -23,15 +21,13 @@ func randNum(digits int) string {
 }
 
 func app() *fyne.Container {
-	title := widget.NewLabel("4Go10")
-	title.SizeName = theme.SizeNameHeadingText
-	title.Alignment = fyne.TextAlignCenter
-
-	win := container.New(layout.NewVBoxLayout(), title)
+	started, win := new_start_page()
 	digits := 1
 
 	main_loop := func() {
+		<-started
 		win.RemoveAll()
+		win.Layout = layout.NewVBoxLayout()
 		num := randNum(digits)
 		win.Add(widget.NewLabel(num))
 		timer, done := timerWidget(time.Duration(1 * time.Second))
@@ -51,8 +47,7 @@ func app() *fyne.Container {
 		}
 	}
 
-	start_btn := widget.NewButton("Start", func() { go main_loop() })
-	win.Add(start_btn)
+	go main_loop()
 
 	return win
 }
