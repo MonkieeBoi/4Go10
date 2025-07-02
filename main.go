@@ -5,7 +5,8 @@ import (
 )
 
 func main() {
-	a := fyneApp.New()
+	a := fyneApp.NewWithID("4Go10")
+	initStorage(a)
 	a.Settings().SetTheme(&nordTheme{})
 	w := a.NewWindow("4Go10")
 	w.SetContent(app())

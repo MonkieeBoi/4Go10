@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
@@ -18,7 +20,7 @@ func new_start_page() (chan bool, *fyne.Container) {
 
 	start_btn := widget.NewButton("Start", func() { go func() { started <- true }() })
 
-	high_score := widget.NewLabel("Highest Score - 1")
+	high_score := widget.NewLabel("Highest Score - " + strconv.Itoa(readHighScore()))
 	high_score.Alignment = fyne.TextAlignCenter
 
 	page := container.New(

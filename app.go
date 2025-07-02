@@ -42,6 +42,7 @@ func app() *fyne.Container {
 				win.Add(widget.NewLabel("Wrong"))
 			} else {
 				win.Add(widget.NewLabel("Correct"))
+				updateHighScore(digits)
 				digits++
 			}
 		}
