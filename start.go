@@ -10,15 +10,13 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-func new_start_page() (chan bool, *fyne.Container) {
-	started := make(chan bool, 1)
-
+func new_start_page(start_func func()) *fyne.Container {
 	title := widget.NewLabel("4Go10")
 	title.SizeName = theme.SizeNameHeadingText
 	title.Alignment = fyne.TextAlignCenter
 	title.TextStyle = fyne.TextStyle{Bold: true}
 
-	start_btn := widget.NewButton("Start", func() { go func() { started <- true }() })
+	start_btn := widget.NewButton("Start", func() { go start_func() })
 
 	high_score := widget.NewLabel("Highest Score - " + strconv.Itoa(readHighScore()))
 	high_score.Alignment = fyne.TextAlignCenter
@@ -32,5 +30,5 @@ func new_start_page() (chan bool, *fyne.Container) {
 		container.New(layout.NewCenterLayout(), high_score),
 	)
 
-	return started, page
+	return page
 }

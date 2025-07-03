@@ -1,48 +1,33 @@
 package main
 
 import (
-	"math/rand/v2"
-	"time"
-
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/widget"
 )
 
-func randNum(digits int) string {
-	d := [10]string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
-	res := ""
-
-	for range digits {
-		res += d[rand.IntN(len(d))]
-	}
-
-	return res
-}
-
 func app() *fyne.Container {
-	started, win := new_start_page()
-	digits := 1
+	started := make(chan bool, 1)
+	res := make(chan bool, 1)
+	win := container.New(layout.NewPaddedLayout())
+	start_func := func() { started <- true }
 
 	main_loop := func() {
-		<-started
-		win.RemoveAll()
-		win.Layout = layout.NewVBoxLayout()
-		num := randNum(digits)
-		win.Add(widget.NewLabel(num))
-		timer, done := timerWidget(time.Duration(1 * time.Second))
-		win.Add(timer)
-		_ = <-done
-		win.RemoveAll()
-		entry := widget.NewEntry()
-		win.Add(entry)
-		entry.OnSubmitted = func(s string) {
+		for {
+			start_page := new_start_page(start_func)
 			win.RemoveAll()
-			if s != num {
-				win.Add(widget.NewLabel("Wrong"))
-			} else {
-				win.Add(widget.NewLabel("Correct"))
-				updateHighScore(digits)
+			win.Add(start_page)
+			<-started
+
+			digits := 1
+			for {
+				win.RemoveAll()
+				win.Add(new_game_screen(digits, res))
+				won := <-res
+				if !won {
+					updateHighScore(digits)
+					break
+				}
 				digits++
 			}
 		}

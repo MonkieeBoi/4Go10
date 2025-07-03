@@ -21,7 +21,6 @@ func timerWidget(d time.Duration) (*widget.ProgressBar, chan bool) {
 			})
 		}
 		done <- true
-		close(done)
 	}()
 	return timer, done
 }
