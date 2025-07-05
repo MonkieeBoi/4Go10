@@ -39,8 +39,24 @@ func (m nordTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) co
 			return colorNord1
 		case theme.ColorNameInputBorder:
 			return colorNord2
+		case theme.ColorNameFocus:
+			return colorNord9
 		}
-
+	} else {
+		switch name {
+		case theme.ColorNamePrimary:
+			return colorNord9
+		case theme.ColorNameBackground:
+			return colorNord6
+		case theme.ColorNameButton:
+			return colorNord5
+		case theme.ColorNameInputBackground:
+			return colorNord5
+		case theme.ColorNameInputBorder:
+			return colorNord4
+		case theme.ColorNameFocus:
+			return colorNord4
+		}
 	}
 	return theme.DefaultTheme().Color(name, variant)
 }
