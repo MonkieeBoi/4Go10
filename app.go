@@ -6,7 +6,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 )
 
-func app() *fyne.Container {
+func mainApp() *fyne.Container {
 	started := make(chan bool, 1)
 	res := make(chan bool, 1)
 	win := container.New(layout.NewPaddedLayout())
