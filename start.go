@@ -25,9 +25,9 @@ func new_start_page(start_func func()) *fyne.Container {
 		layout.NewGridLayoutWithRows(5),
 		&widget.Label{},
 		&widget.Label{},
-		container.New(layout.NewCenterLayout(), title),
-		container.New(layout.NewCenterLayout(), start_btn),
-		container.New(layout.NewCenterLayout(), high_score),
+		centered(title),
+		centered(start_btn),
+		centered(high_score),
 	)
 
 	return page
