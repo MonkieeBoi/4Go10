@@ -7,14 +7,14 @@ import (
 	"fyne.io/fyne/v2/storage"
 )
 
-var store fyne.Storage
+var rootURI fyne.URI
 
-func initStorage(fyneApp fyne.App) {
-	store = fyneApp.Storage()
+func initStorage(rURI fyne.URI) {
+	rootURI = rURI
 }
 
 func getHighScoreURI() fyne.URI {
-	uri, _ := storage.Child(store.RootURI(), "highscore.txt")
+	uri, _ := storage.Child(rootURI, "highscore.txt")
 	return uri
 }
 
