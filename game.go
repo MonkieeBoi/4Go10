@@ -6,6 +6,8 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -27,25 +29,68 @@ func calc_time(digits int) time.Duration {
 	return time.Second * time.Duration(digits)
 }
 
-func new_game_screen(digits int, result_chan chan bool) *fyne.Container {
+func end_screen(page *fyne.Container, res_chan chan bool, num string, guess string) {
+	page.Layout = layout.NewGridLayoutWithRows(9)
+	page.Add(&widget.Label{})
+	page.Add(&widget.Label{})
+
+	l1 := widget.NewLabel("Number")
+	l2 := widget.NewLabel(num)
+	l3 := widget.NewLabel("Guessed")
+	l4 := widget.NewLabel(guess)
+	l5 := widget.NewButton("Ok", func() { res_chan <- false })
+
+	l1.Alignment = fyne.TextAlignCenter
+	l2.Alignment = fyne.TextAlignCenter
+	l3.Alignment = fyne.TextAlignCenter
+	l4.Alignment = fyne.TextAlignCenter
+
+	l1.SizeName = theme.SizeNameSubHeadingText
+	l2.SizeName = theme.SizeNameHeadingText
+	l3.SizeName = theme.SizeNameSubHeadingText
+	l4.SizeName = theme.SizeNameHeadingText
+
+	l1.TextStyle = fyne.TextStyle{Bold: true}
+	l3.TextStyle = fyne.TextStyle{Bold: true}
+
+	page.Add(l1)
+	page.Add(l2)
+	page.Add(l3)
+	page.Add(l4)
+	page.Add(centered(l5))
+}
+
+func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 	page := container.NewVBox()
 
 	go func() {
 		num := randNum(digits)
-		page.Add(widget.NewLabel(num))
+		numLabel := widget.NewLabel(num)
+		numLabel.Alignment = fyne.TextAlignCenter
+		numLabel.SizeName = theme.SizeNameHeadingText
 		timer, done := timerWidget(calc_time(digits))
-		page.Add(timer)
+
+		fyne.DoAndWait(func() {
+			page.Add(numLabel)
+			page.Add(timer)
+		})
+
 		<-done
 
-		page.RemoveAll()
 		entry := widget.NewEntry()
-		page.Add(entry)
+
+		fyne.DoAndWait(func() {
+			page.RemoveAll()
+			page.Add(entry)
+			w.Canvas().Focus(entry)
+		})
+
 		entry.OnSubmitted = func(s string) {
 			page.RemoveAll()
-			if s != num {
-				result_chan <- false
+			if s == num {
+				res_chan <- true
 			} else {
-				result_chan <- true
+				end_screen(page, res_chan, num, s)
 			}
 		}
 	}()
