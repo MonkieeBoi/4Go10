@@ -2,10 +2,12 @@ package main
 
 import (
 	"math/rand/v2"
+	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -60,6 +62,15 @@ func end_screen(page *fyne.Container, res_chan chan bool, num string, guess stri
 	page.Add(centered(l5))
 }
 
+func addNum(boundNum binding.String, num string) func() {
+	return func() {
+		s, err := boundNum.Get()
+		if err == nil {
+			boundNum.Set(s + num)
+		}
+	}
+}
+
 func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 	page := container.NewVBox()
 
@@ -77,22 +88,39 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 
 		<-done
 
-		entry := widget.NewEntry()
-
-		fyne.DoAndWait(func() {
+		page.Layout = layout.NewGridLayoutWithRows(2)
+		boundNum := binding.NewString()
+		boundLabel := widget.NewLabelWithData(boundNum)
+		boundLabel.SizeName = theme.SizeNameHeadingText
+		numPad := container.NewGridWithColumns(3)
+		for i := 1; i <= 9; i++ {
+			si := strconv.Itoa(i)
+			button := centered(widget.NewButton(si, addNum(boundNum, si)))
+			numPad.Add(button)
+		}
+		numPad.Add(centered(widget.NewButton("⌫", func() {
+			s, err := boundNum.Get()
+			if err == nil && s != "" {
+				runes := []rune(s)
+				boundNum.Set(string(runes[:len(runes)-1]))
+			}
+		})))
+		numPad.Add(centered(widget.NewButton("0", addNum(boundNum, "0"))))
+		numPad.Add(centered(widget.NewButton("✓", func() {
+			s, err := boundNum.Get()
 			page.RemoveAll()
-			page.Add(entry)
-			w.Canvas().Focus(entry)
-		})
-
-		entry.OnSubmitted = func(s string) {
-			page.RemoveAll()
-			if s == num {
+			if s == num || err != nil {
 				res_chan <- true
 			} else {
 				end_screen(page, res_chan, num, s)
 			}
-		}
+		})))
+
+		fyne.DoAndWait(func() {
+			page.RemoveAll()
+			page.Add(centered(boundLabel))
+			page.Add(numPad)
+		})
 	}()
 
 	return page
