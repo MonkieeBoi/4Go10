@@ -9,3 +9,7 @@ import (
 func centered(widget fyne.Widget) *fyne.Container {
 	return container.New(layout.NewCenterLayout(), widget)
 }
+
+func stretched(widget fyne.Widget) *fyne.Container {
+	return container.New(layout.NewStackLayout(), widget)
+}

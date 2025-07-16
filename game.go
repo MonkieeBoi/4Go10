@@ -95,18 +95,18 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 		numPad := container.NewGridWithColumns(3)
 		for i := 1; i <= 9; i++ {
 			si := strconv.Itoa(i)
-			button := centered(widget.NewButton(si, addNum(boundNum, si)))
+			button := stretched(widget.NewButton(si, addNum(boundNum, si)))
 			numPad.Add(button)
 		}
-		numPad.Add(centered(widget.NewButton("⌫", func() {
+		numPad.Add(stretched(widget.NewButton("⌫", func() {
 			s, err := boundNum.Get()
 			if err == nil && s != "" {
 				runes := []rune(s)
 				boundNum.Set(string(runes[:len(runes)-1]))
 			}
 		})))
-		numPad.Add(centered(widget.NewButton("0", addNum(boundNum, "0"))))
-		numPad.Add(centered(widget.NewButton("✓", func() {
+		numPad.Add(stretched(widget.NewButton("0", addNum(boundNum, "0"))))
+		numPad.Add(stretched(widget.NewButton("✓", func() {
 			s, err := boundNum.Get()
 			page.RemoveAll()
 			if s == num || err != nil {
