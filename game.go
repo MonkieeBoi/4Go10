@@ -79,10 +79,11 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 		numLabel := widget.NewLabel(num)
 		numLabel.Alignment = fyne.TextAlignCenter
 		numLabel.SizeName = theme.SizeNameHeadingText
+		numLabel.Wrapping = fyne.TextWrapWord
 		timer, done := timerWidget(calc_time(digits))
 
 		fyne.DoAndWait(func() {
-			page.Add(numLabel)
+			page.Add(stretched(numLabel))
 			page.Add(timer)
 		})
 
@@ -91,7 +92,9 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 		page.Layout = layout.NewGridLayoutWithRows(2)
 		boundNum := binding.NewString()
 		boundLabel := widget.NewLabelWithData(boundNum)
+		boundLabel.Alignment = fyne.TextAlignCenter
 		boundLabel.SizeName = theme.SizeNameHeadingText
+		boundLabel.Wrapping = fyne.TextWrapWord
 		numPad := container.NewGridWithColumns(3)
 		for i := 1; i <= 9; i++ {
 			si := strconv.Itoa(i)
@@ -118,7 +121,7 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 
 		fyne.DoAndWait(func() {
 			page.RemoveAll()
-			page.Add(centered(boundLabel))
+			page.Add(stretched(boundLabel))
 			page.Add(numPad)
 		})
 	}()

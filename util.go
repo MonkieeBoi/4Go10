@@ -6,10 +6,10 @@ import (
 	"fyne.io/fyne/v2/layout"
 )
 
-func centered(widget fyne.Widget) *fyne.Container {
-	return container.New(layout.NewCenterLayout(), widget)
+func centered(canvas fyne.CanvasObject) *fyne.Container {
+	return container.New(layout.NewCenterLayout(), canvas)
 }
 
-func stretched(widget fyne.Widget) *fyne.Container {
-	return container.New(layout.NewStackLayout(), widget)
+func stretched(canvas fyne.CanvasObject) *fyne.Container {
+	return container.New(layout.NewStackLayout(), canvas)
 }
