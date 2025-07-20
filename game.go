@@ -101,23 +101,39 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 			button := stretched(widget.NewButton(si, addNum(boundNum, si)))
 			numPad.Add(button)
 		}
-		numPad.Add(stretched(widget.NewButton("⌫", func() {
+
+		backspace := func() {
 			s, err := boundNum.Get()
 			if err == nil && s != "" {
 				runes := []rune(s)
 				boundNum.Set(string(runes[:len(runes)-1]))
 			}
-		})))
+		}
+		numPad.Add(stretched(widget.NewButton("⌫", backspace)))
 		numPad.Add(stretched(widget.NewButton("0", addNum(boundNum, "0"))))
-		numPad.Add(stretched(widget.NewButton("✓", func() {
-			s, err := boundNum.Get()
+
+		enter := func() {
 			page.RemoveAll()
+			s, err := boundNum.Get()
 			if s == num || err != nil {
 				res_chan <- true
 			} else {
 				end_screen(page, res_chan, num, s)
 			}
-		})))
+		}
+		numPad.Add(stretched(widget.NewButton("✓", enter)))
+
+		w.Canvas().SetOnTypedKey(func(ke *fyne.KeyEvent) {
+			switch ke.Name {
+			case "BackSpace":
+				backspace()
+			case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":
+				s, err := boundNum.Get()
+				if err == nil {
+					boundNum.Set(s + string(ke.Name))
+				}
+			}
+		})
 
 		fyne.DoAndWait(func() {
 			page.RemoveAll()
