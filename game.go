@@ -60,6 +60,7 @@ func end_screen(page *fyne.Container, res_chan chan bool, num string, guess stri
 	page.Add(l3)
 	page.Add(l4)
 	page.Add(centered(l5))
+	page.Refresh()
 }
 
 func addNum(boundNum binding.String, num string) func() {
@@ -114,6 +115,8 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 
 		enter := func() {
 			page.RemoveAll()
+			w.Canvas().SetOnTypedKey(nil)
+			page.Refresh()
 			s, err := boundNum.Get()
 			if s == num || err != nil {
 				res_chan <- true
@@ -125,6 +128,8 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 
 		w.Canvas().SetOnTypedKey(func(ke *fyne.KeyEvent) {
 			switch ke.Name {
+			case "Return":
+				enter()
 			case "BackSpace":
 				backspace()
 			case "0", "1", "2", "3", "4", "5", "6", "7", "8", "9":

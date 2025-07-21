@@ -18,6 +18,7 @@ func timerWidget(d time.Duration) (*widget.ProgressBar, chan bool) {
 			time.Sleep(time.Millisecond * 1)
 			fyne.Do(func() {
 				timer.SetValue(i)
+				timer.Refresh()
 			})
 		}
 		done <- true
