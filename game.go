@@ -84,13 +84,14 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 		timer, done := timerWidget(calc_time(digits))
 
 		fyne.DoAndWait(func() {
+			page.Add(layout.NewSpacer())
 			page.Add(stretched(numLabel))
+			page.Add(layout.NewSpacer())
 			page.Add(timer)
 		})
 
 		<-done
 
-		page.Layout = layout.NewGridLayoutWithRows(2)
 		boundNum := binding.NewString()
 		boundLabel := widget.NewLabelWithData(boundNum)
 		boundLabel.Alignment = fyne.TextAlignCenter
@@ -142,7 +143,8 @@ func new_game_screen(digits int, res_chan chan bool) *fyne.Container {
 
 		fyne.DoAndWait(func() {
 			page.RemoveAll()
-			page.Add(stretched(boundLabel))
+			page.Layout = layout.NewGridLayoutWithRows(2)
+			page.Add(container.NewVBox(layout.NewSpacer(), boundLabel, layout.NewSpacer()))
 			page.Add(numPad)
 		})
 	}()
